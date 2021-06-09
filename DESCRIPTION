@@ -1,0 +1,12 @@
+Package: cospex
+Type: Package
+Title: Conditional Spatial Extremes Model
+Version: 0.0.1
+Author: Leo Belzile
+Maintainer: Leo Belzile <leo.belzile@hec.ca>
+Description: Conditional spatial extremes model of Wadsworth and Tawn (2020)
+    Maximum likelihood inference, (un)conditional simulation and estimation
+    of risk sets via importance sampling.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
