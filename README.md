@@ -17,7 +17,7 @@ thereof) of Wadsworth and Tawn. At maturity, it is expected that the
 package functionalities will include
 
 -   [ ] `S4` classes for models
--   [ ] \`S4 classes for scaling functions
+-   [x] `S4` classes for scaling functions
 -   [ ] predefined scaling functions
 -   [ ] maximum likelihood estimation routines
 -   [ ] simulation: unconditional (forward sampling)
@@ -31,9 +31,11 @@ package functionalities will include
 -   [ ] extension: addition of nugget term
 -   [ ] marginal transformation to standardized margins (with
     semiparametric transformation and point mass for zero inflation)
--   \[\] left-censoring
--   \[\] unit tests
--   \[\] vignettes
+-   [ ] left-censoring
+-   [ ] unit tests
+-   [ ] vignettes
+-   [ ] linear combination basis functions with gaussian weights in
+    place of residual Gaussian process (INLA, multiresolution)
 
 ## Installation
 

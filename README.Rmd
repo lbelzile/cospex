@@ -21,15 +21,14 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The `cospex` packages proposes S4 classes for defining and simulating observations from the conditional spatial extremes (and extensions thereof) of Wadsworth and Tawn. At maturity, it is expected that the package functionalities will include
+The `cospex` packages proposes S4 classes for defining, estimating and simulating observations from the conditional spatio-temporal extremes (and extensions thereof) of Wadsworth and Tawn. At maturity, it is expected that the package functionalities will include
 
 - [ ] `S4` classes for models
-- [ ] `S4 classes for scaling functions
+- [x] `S4` classes for scaling functions
 - [ ] predefined scaling functions
 - [ ] maximum likelihood estimation routines
-- [ ] simulation: unconditional (forward sampling)
-- [ ] simulation: conditional 
-- [ ] simulation: importance sampling scheme
+- [ ] unconditional simulation (forward sampling, importance sampling)
+- [ ] conditional simulations (kriging)
 - [ ] diagnostic plot: lag independence
 - [ ] diagnostic plot: Kendall's $\tau$
 - [ ] utilities: covariance models
@@ -37,9 +36,10 @@ The `cospex` packages proposes S4 classes for defining and simulating observatio
 - [ ] `S4` methods for summary objects
 - [ ] extension: addition of nugget term
 - [ ] marginal transformation to standardized margins (with semiparametric transformation and point mass for zero inflation)
-- [] left-censoring
-- [] unit tests
-- [] vignettes
+- [ ] left-censoring
+- [ ] unit tests
+- [ ] vignettes
+- [ ] linear combination basis functions with Gaussian weights in place of residual Gaussian process (INLA, multiresolution)
 
 ## Installation
 

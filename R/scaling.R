@@ -15,7 +15,7 @@
 # For ergodicity, need b=1 as h = d(s, s0) -> oo
 # Allow for fixed parameters for each submodel
 
-setClass("ScalingFunction", contains = "VIRTUAL",
+setClass("ScalingFunction",
          slots = c(npar = "integer",   # number of parameters for optimization
                    default = "numeric",# default values for parameters / starting values for optimization
                    func = "function",  # affine normalization function
@@ -40,24 +40,24 @@ setClass("ScalingFunction", contains = "VIRTUAL",
              length(default(object)),
              length(lowerBound(object)),
              length(upperBound(object)),
-             length(isFixed(object))
+             length(is.fixed(object))
            )
            if(length(unique(length_args)) != 1L){
              return("Bounds and constraints must have the same length as the parameter vector.")
            }
-           if(length(type) != 1L || !type %in% c("scale","loc","locx")){
-             return("`type` must be a character, either `scale`,`loc` or `locx`.")
+           if(length(object@type) != 1L || !object@type %in% c("scale","loc","locx")){
+             return("\"type\" must be a character, either \"scale\",\"loc\" or \"locx\".")
            }
-           if(length(cst) != 1L){
-             return("`cst` must be a logical of length one.")
+           if(length(object@cst) != 1L){
+             return("\"cst\" must be a logical of length one.")
            }
-           if(!isTRUE(all(lower < upper))){
-             return("Lower bound `lower` and upper bound `upper` are not ordered: must provide `lower` < `upper`.")
+           if(!isTRUE(all(object@lower < object@upper))){
+             return("Lower bound \"lower\" and upper bound \"upper\" are not ordered: must provide \"lower\" < \"upper\".")
            }
-           if(!isTRUE(all(lower <= default, upper >= default))){
-             return("Some default values for parameters are out of bound: either `default` > `upper` or `default` < `lower`.")
+           if(!isTRUE(all(object@lower <= object@default, object@upper >= object@default))){
+             return("Some default values for parameters are out of bound: either \"default\" > \"upper\" or \"default\" < \"lower\".")
            }
-           if(!isTRUE(all.equal(functionBody(func(object)), functionBody(grad(object))))){
+           if(!isTRUE(all.equal(formalArgs(func(object)), formalArgs(grad(object))))){
              return("Arguments of the scaling function and its gradient do not match.")
            }
            TRUE
@@ -121,7 +121,7 @@ setGeneric("upperBound", function(x) standardGeneric("upperBound"))
 setMethod("upperBound", "ScalingFunction", function(x) x@upper)
 
 setGeneric("is.fixed", function(x) standardGeneric("is.fixed"))
-setMethod("is.fixed", "ScalingFunction", function(x) x@isFixed)
+setMethod("is.fixed", "ScalingFunction", function(x) x@fixed)
 
 setMethod("show", "ScalingFunction",
           function(object){
@@ -143,10 +143,11 @@ setReplaceMethod("is.fixed", "ScalingFunction", function(x, value) {x@fixed <- v
 setGeneric("default<-", function(x, value) standardGeneric("default<-"))
 setReplaceMethod("default", "ScalingFunction", function(x, value) {x@default <- value; validObject(x); x})
 
-expCor <- function(par, x, dist,...){
+
+expCorFunc <- function(par, x, dist,...){
   stopifnot(isTRUE(all(dist > 0)),
             length(x) == 1L,
-            is.numeric(x)
+            is.numeric(x),
             x > 0,
             par[2] < 2,
             par[1] > 0,
@@ -154,15 +155,27 @@ expCor <- function(par, x, dist,...){
   )
  x*exp(-(dist/par[1])^par[2])
 }
-
+expCorGrad <- function(par, x, dist,...){
+  stopifnot(isTRUE(all(dist > 0)),
+            length(x) == 1L,
+            is.numeric(x),
+            x > 0,
+            par[2] < 2,
+            par[1] > 0,
+            par[2] > 0
+  )
+  x*exp(-(dist/par[1])^par[2])*(dist/par[1])^par[2]
+    c(par[2]/par[1], log(par[2]))
+}
 # Define scaling functions used in the various papers
-#
-locFunExp <- ScalingFunction(npar = 2,
-                             func = expCor,
-                             default = c(1, 1),
-                             lower = c(0, 0),
-                             upper = c(Inf, 2),
-                             cst = FALSE,
-                             fixed = c(FALSE, FALSE))
 
-             )
+locFunExp <- new("ScalingFunction",
+                 npar = 2L,
+                 default = c(1, 1),
+                 func = expCorFunc,
+                 grad = expCorGrad,
+                 type = "locx",
+                 lower = c(0, 0),
+                 upper = c(Inf, 2),
+                 cst = FALSE,
+                 fixed = rep(FALSE, 2))
