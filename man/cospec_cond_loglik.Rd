@@ -9,7 +9,7 @@ cospec_cond_loglik(x, censoring, mu, tau)
 \arguments{
 \item{x}{[numeric] vector of observations}
 
-\item{censoring}{[logical] if \code{TRUE}, observation is left-censored, observed otherwise}
+\item{censoring}{[logical] vector; if \code{TRUE}, observation is left-censored, observed otherwise}
 
 \item{mu}{[numeric] mean vector}
 

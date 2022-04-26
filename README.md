@@ -11,20 +11,20 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 <!-- badges: end -->
 
-The `cospex` packages proposes S4 classes for defining and simulating
-observations from the conditional spatial extremes (and extensions
-thereof) of Wadsworth and Tawn. At maturity, it is expected that the
-package functionalities will include
+The `cospex` packages proposes S4 classes for defining, estimating and
+simulating observations from the conditional spatio-temporal extremes
+(and extensions thereof) of Wadsworth and Tawn. At maturity, it is
+expected that the package functionalities will include
 
 -   [ ] `S4` classes for models
 -   [x] `S4` classes for scaling functions
 -   [ ] predefined scaling functions
 -   [ ] maximum likelihood estimation routines
--   [ ] simulation: unconditional (forward sampling)
--   [ ] simulation: conditional
--   [ ] simulation: importance sampling scheme
+-   [ ] unconditional simulation (forward sampling, importance sampling)
+-   [ ] conditional simulations (kriging)
 -   [ ] diagnostic plot: lag independence
--   [ ] diagnostic plot: Kendall’s *τ*
+-   [ ] diagnostic plot: Kendall’s
+    ![\tau](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctau "\tau")
 -   [ ] utilities: covariance models
 -   [ ] utilities: distance with geometric anisotropy
 -   [ ] `S4` methods for summary objects
@@ -34,7 +34,7 @@ package functionalities will include
 -   [ ] left-censoring
 -   [ ] unit tests
 -   [ ] vignettes
--   [ ] linear combination basis functions with gaussian weights in
+-   [ ] linear combination basis functions with Gaussian weights in
     place of residual Gaussian process (INLA, multiresolution)
 
 ## Installation

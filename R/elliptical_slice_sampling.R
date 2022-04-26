@@ -19,11 +19,11 @@ elliptical_slice_sampling <-
       stop("The sample \"normSamp\" and the current value \"curState\" are not of the same length.")
     }
     # Check that it's a function and signature
-    stopifnot(is.function(logLikFun))
-    fnArgs <- formalArgs(logLikFun)
+    stopifnot(is.function(logLikFn))
+    fnArgs <- formalArgs(logLikFn)
     ellipsis <- list(...)
     if(!isTRUE(all(names(ellipsis) %in% fnArgs[-1]))){
-      stop("Some arguments passed to the function not called by \"logLikFun\".")
+      stop("Some arguments passed to the function not called by \"logLikFn\".")
     }
   logy <- do.call(what = logLikFn,
                   args = c(ellipsis,

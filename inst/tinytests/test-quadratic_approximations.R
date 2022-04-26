@@ -108,7 +108,7 @@ for(i in seq_along(chain2)){
     chain2[i] <- curr
   }
 }
-hist(chain2, probability = TRUE, breaks = 100)
+hist(chain2, probability = TRUE, breaks = 50L)
 curve(dbeta(x,
             shape1 = 1 + x0,
             shape2 = 1 + n - x0),
