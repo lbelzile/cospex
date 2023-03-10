@@ -11,7 +11,7 @@
 #' @param mu [numeric] mean vector
 #' @param tau [numeric] standard deviation vector (or scalar)
 #' @export
-cospec_cond_loglik <-
+cospex_cond_loglik <-
   function(x,
            censoring,
            mu,
@@ -42,9 +42,9 @@ cospec_cond_loglik <-
 #'
 #' Gradient with respect to scale \eqn{\tau}.
 #'
-#' @inheritParams cospec_cond_loglik
+#' @inheritParams cospex_cond_loglik
 #' @export
-cospec_cond_loglik_grad_tau <-
+cospex_cond_loglik_grad_tau <-
   function(x,
            censoring,
            mu,
@@ -70,9 +70,9 @@ cospec_cond_loglik_grad_tau <-
 #' Hessian of conditional censored log likelihood
 #'  with respect to scale \eqn{\tau}.
 #'
-#' @inheritParams cospec_cond_loglik
+#' @inheritParams cospex_cond_loglik
 #' @export
-cospec_cond_loglik_hessian_tau <-
+cospex_cond_loglik_hessian_tau <-
   function(x,
            censoring,
            mu,
@@ -98,9 +98,9 @@ cospec_cond_loglik_hessian_tau <-
 #'
 #' Gradient with respect to location parameter.
 #'
-#' @inheritParams cospec_cond_loglik
+#' @inheritParams cospex_cond_loglik
 #' @export
-cospec_cond_loglik_grad_mu <-
+cospex_cond_loglik_grad_mu <-
   function(x,
            censoring,
            mu,
@@ -126,9 +126,9 @@ cospec_cond_loglik_grad_mu <-
 #'
 #' Hessian with respect to location parameter.
 #' @return a list with two vectors, to be used with the chain rule
-#' @inheritParams cospec_cond_loglik
+#' @inheritParams cospex_cond_loglik
 #' @export
-cospec_cond_loglik_hessian_mu <-
+cospex_cond_loglik_hessian_mu <-
   function(x,
            censoring,
            mu,

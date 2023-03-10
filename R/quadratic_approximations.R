@@ -23,6 +23,7 @@
 #' @param ... additional arguments passed to the log likelihood function and its derivatives
 #' @return a new value for the parameter of interest
 #' @export
+#' @references Rue, H. and L. Held (2005), Gaussian Markov random fields, CRC press, section 4.4.1
 univariate_laplace_update <-
   function(par_curr,
            par_name,
@@ -129,20 +130,21 @@ univariate_laplace_update <-
 #' a random walk based on a multivariate normal approximation
 #' at the \code{cur} parameter value.
 #'
-#' @param cur [double] curr value of the parameter
+#' @param cur [double] current value of the vector parameter
 #' @param par_name [string] the name of the argument for the function
 #' @param loglik [function] log likelihood function
 #' @param loglik_gradient [function] derivative of the log likelihood with respect to parameter of interest
-#' @param loglik_hessian [function] second derivative of the log likelihood with respect to the parameter of interest
+#' @param loglik_hessian [function] hessian matrix, the second derivative of the log likelihood with respect to the parameter of interest
 #' @param logprior [function] log prior of parameter
 #' @param logprior_gradient [function] derivative of the log prior with respect to parameter of interest
 #' @param logprior_hessian [function] second derivative of the log prior with respect to the parameter of interest
-#' @param lb [scalar] lower bound for the parameter
-#' @param ub [scalar] upper bound for the parameter
-#' @param damping [scalar] contraction factor for the Newton update
+#' @param lb [double] vector of lower bounds for the parameters
+#' @param ub [double] vector of upper bounds for the parameters
+#' @param damping [double] double or vector of contraction factor for the Newton update
 #' @param ... additional arguments passed to the log likelihood function and its derivatives
-#' @return a new value for the parameter of interest
+#' @return a new vector for the parameter of interest
 #' @export
+#' @references Rue, H. and L. Held (2005), Gaussian Markov random fields, CRC press, section 4.4.2
 multivariate_laplace_update <-
   function(par_curr,
            par_name,
@@ -185,17 +187,20 @@ multivariate_laplace_update <-
       do.call(what = loglik_hessian,
               args = loglik_args) +
       logprior_hessian(par_curr)
-    mean_curr <- par_curr -
-      damping * logpost_grad_curr/logpost_hessian_curr
-    precision_curr <- -logpost_hessian_curr
-    if(!isTRUE(precision_curr > 0)){
+    eigen_precision <- eigen(-logpost_hessian_curr)
+    if(!isTRUE(all(eigen_precision$values > 0))){
       return(par_new)
     }
-    par_prop <- rtnorm(n = 1,
-                       a = lb,
-                       b = ub,
-                       mean = mean_curr,
-                       sd = sqrt(1/precision_curr))
+    covar_curr <- tcrossprod(eigen_precision$vectors %*% diag(1/sqrt(eigen_precision$values)))
+    mean_curr <- par_curr -
+      damping * logpost_grad_curr %*% covar_curr
+    precision_curr <- -logpost_hessian_curr
+    par_prop <- TruncatedNormal::rtmvnorm(
+      n = 1,
+      a = lb,
+      b = ub,
+      mu = mean_curr,
+      sigma = covar_curr)
     logpost_curr <-
       do.call(what = loglik,
               args = loglik_args) +
@@ -212,29 +217,30 @@ multivariate_laplace_update <-
       do.call(what = loglik_hessian,
               args = loglik_args) +
       logprior_hessian(par_prop)
-    mean_prop <- par_prop -
-      damping * logpost_grad_prop/logpost_hessian_prop
-    precision_prop <- -logpost_hessian_prop
-    if(!isTRUE(precision_prop > 0)){
+    eigen_precision <- eigen(-logpost_hessian_prop)
+    if(!isTRUE(all(eigen_precision$values > 0))){
       return(par_new)
     }
+    covar_prop <- tcrossprod(eigen_precision$vectors %*% diag(1/sqrt(eigen_precision$values)))
+    mean_curr <- as.numeric(par_prop -
+      damping * logpost_grad_prop %*% covar_prop)
     logpost_prop <-
       do.call(what = loglik,
               args = loglik_args) +
       logprior(par_prop)
     log_MH_ratio <-
       logpost_prop - logpost_curr +
-      dtnorm(par_curr,
+      TruncatedNormal::dtmvnorm(par_curr,
              a = lb,
              b = ub,
-             mean = mean_prop,
-             sd = sqrt(1/precision_prop),
+             mu = mean_prop,
+             sigma = covar_prop,
              log = TRUE) -
-      dtnorm(par_prop,
+      TruncatedNormal::dtmvnorm(par_prop,
              a = lb,
              b = ub,
-             mean = mean_curr,
-             sd = sqrt(1/precision_curr),
+             mu = mean_curr,
+             sigma = covar_curr,
              log = TRUE)
     if(log_MH_ratio > log(runif(1))){
       par_new <- par_prop
